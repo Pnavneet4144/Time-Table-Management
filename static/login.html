@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — NIT TMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/forms.css" />
+</head>
+<body class="auth-body">
+  <div class="auth-container">
+    <div class="auth-left">
+      <div class="auth-brand">
+        <span class="brand-icon">⬡</span>
+        <span class="brand-name">IIIT-Pune<strong>TMS</strong></span>
+      </div>
+      <div class="auth-left-content">
+        <h1>Welcome Back</h1>
+        <p>Access your timetable, manage schedules, and collect feedback — all in one place.</p>
+        <div class="auth-features">
+          <div class="auth-feature"><span>✓</span>Secure Full Auth</div>
+          <div class="auth-feature"><span>✓</span>Role-Based Dashboard</div>
+          <div class="auth-feature"><span>✓</span>You Can find Here</div>
+          <div class="auth-feature"><span>✓</span>Dynamic Feedback Forms</div>
+          <div class="auth-feature"><span>✓</span>Dynamic Time Table PDF</div>
+        </div>
+      </div>
+      <a href="/static/index.html" class="back-link">← Back to Home</a>
+    </div>
+
+    <div class="auth-right">
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="loginTab" onclick="switchTab('login')">Sign In</button>
+          <button class="auth-tab" id="registerTab" onclick="switchTab('register')">Register</button>
+        </div>
+
+        <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+          <h2 class="form-title">Sign In</h2>
+          <p style="font-size:0.85rem;color:#78909c;margin-bottom:0.8rem">Your role (Admin / Student) is detected automatically from your account.</p>
+          <div class="form-group">
+            <label for="loginUsername">Username</label>
+            <input type="text" id="loginUsername" placeholder="Enter your username" required />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter your password" required />
+          </div>
+          <div class="form-error" id="loginError"></div>
+          <button type="submit" class="submit-btn" id="loginBtn">
+            <span>Sign In</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </form>
+
+        <form id="registerForm" class="auth-form hidden" onsubmit="handleRegister(event)">
+          <h2 class="form-title">Student Registration</h2>
+          <div class="notice-box">
+            🎓 This registration is for <strong>Students only</strong>.<br/>Take care.
+          </div>
+          <div class="form-group">
+            <label for="regUsername">Username</label>
+            <input type="text" id="regUsername" placeholder="Choose a username" required />
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" placeholder="Enter your email" required />
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" placeholder="Create a strong password" required minlength="6" />
+          </div>
+          <div class="form-error" id="registerError"></div>
+          <div class="form-success" id="registerSuccess"></div>
+          <button type="submit" class="submit-btn" id="registerBtn">
+            <span>Create Student Account</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/auth.js"></script>
+  <script>
+    function switchTab(tab) {
+      document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+      document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+      document.getElementById('loginTab').classList.toggle('active', tab === 'login');
+      document.getElementById('registerTab').classList.toggle('active', tab === 'register');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const errorDiv = document.getElementById('loginError');
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      errorDiv.style.display = 'none';
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'Signing in...';
+      try {
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Login failed');
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('role', data.role);
+        localStorage.setItem('username', username);
+        if (data.role === 'admin') {
+          window.location.href = '/static/admin-dashboard.html';
+        } else {
+          window.location.href = '/static/student-dashboard.html';
+        }
+      } catch (err) {
+        errorDiv.textContent = err.message;
+        errorDiv.style.display = 'block';
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'Sign In';
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const btn = document.getElementById('registerBtn');
+      const errorDiv = document.getElementById('registerError');
+      const successDiv = document.getElementById('registerSuccess');
+      const username = document.getElementById('regUsername').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'Creating...';
+      try {
+        const res = await fetch('/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, email })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Registration failed');
+        successDiv.textContent = 'Student account created! You can now sign in.';
+        successDiv.style.display = 'block';
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'Create Student Account';
+        setTimeout(() => switchTab('login'), 2000);
+      } catch (err) {
+        errorDiv.textContent = err.message;
+        errorDiv.style.display = 'block';
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'Create Student Account';
+      }
+    }
+  </script>
+</body>
+</html>

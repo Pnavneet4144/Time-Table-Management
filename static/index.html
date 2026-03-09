@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IIIT — Timetable Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <span class="brand-icon">⬡</span>
+      <span class="brand-text">IIIT<strong>TMS</strong></span>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#hero" class="nav-link">Home</a></li>
+      <li><a href="#about-system" class="nav-link">About System</a></li>
+      <li><a href="#about-college" class="nav-link">About College</a></li>
+      <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+      <li><a href="/static/login.html" class="nav-login">Login</a></li>
+    </ul>
+  </nav>
+
+  <section id="hero" class="section hero-section">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Academic Year 2025-26</div>
+      <h1 class="hero-title">
+        <span class="title-line">Intelligent</span>
+        <span class="title-line accent">Timetable</span>
+        <span class="title-line">Management</span>
+      </h1>
+      <p class="hero-tagline">Indian Institute of Information Technology, Pune</p>
+      <div class="hero-cta-group">
+        <a href="/static/login.html" class="btn-primary">Get Started →</a>
+        <a href="#about-system" class="btn-ghost">Learn More</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-card"><span class="stat-number">360°</span><span class="stat-label">Scheduling Control</span></div>
+        <div class="stat-card"><span class="stat-number">Real-time</span><span class="stat-label">PDF Export</span></div>
+        <div class="stat-card"><span class="stat-number">Dynamic</span><span class="stat-label">Feedback Forms</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="timetable-preview">
+        <div class="preview-header">Weekly Schedule</div>
+        <div class="preview-grid">
+          <div class="preview-cell header">Mon</div>
+          <div class="preview-cell header">Tue</div>
+          <div class="preview-cell header">Wed</div>
+          <div class="preview-cell filled">CS401<br/><small>Room A1</small></div>
+          <div class="preview-cell"></div>
+          <div class="preview-cell filled">MA301<br/><small>Room B3</small></div>
+          <div class="preview-cell"></div>
+          <div class="preview-cell filled">EC202<br/><small>Lab C2</small></div>
+          <div class="preview-cell"></div>
+          <div class="preview-cell filled">CS402<br/><small>Room A2</small></div>
+          <div class="preview-cell filled">PH101<br/><small>Room D1</small></div>
+          <div class="preview-cell"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about-system" class="section about-system-section">
+    <div class="section-inner">
+      <div class="section-label">SYSTEM OVERVIEW</div>
+      <h2 class="section-title">Built for Academic Excellence</h2>
+      <p class="section-desc">A comprehensive platform that bridges administration and students through intelligent scheduling and meaningful feedback collection.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h3>Dynamic Timetable Builder</h3>
+          <p>Create, edit, and manage semester timetables with drag-and-drop simplicity. Assign subjects, rooms, and time slots with conflict detection.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <h3>Instant PDF Export</h3>
+          <p>Generate beautifully formatted timetable PDFs with college branding. Download instantly or share digitally with one click.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Smart Feedback System</h3>
+          <p>Build dynamic feedback forms with rating, text, and MCQ question types. Share selectively to individual students and track completion.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔐</div>
+          <h3>Role-Based Security</h3>
+          <p>JWT-secured authentication with Admin and Student roles. Every endpoint protected with role verification and access control.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Response Analytics</h3>
+          <p>View aggregated feedback responses per form or drill down to individual student submissions with clean tabular display.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏫</div>
+          <h3>Room Management</h3>
+          <p>Maintain a complete inventory of classrooms and labs with capacity tracking to optimize space allocation across departments.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about-college" class="section about-college-section">
+    <div class="section-inner">
+      <div class="college-hero">
+        <div class="college-emblem">⬡</div>
+        <div class="college-info">
+          <div class="section-label light">OUR INSTITUTION</div>
+          <h2 class="section-title light">Indian Institute of Information Technology</h2>
+          <p class="college-tagline">Established 2016 · Accredited A++ · NIRF Rank 12</p>
+          <p class="college-desc">A premier autonomous technical institution committed to excellence in engineering, science, and technology education. Our campus spans 300 acres and houses 12 departments serving over 8,000 students across undergraduate and postgraduate programs.</p>
+          <div class="college-pillars">
+            <div class="pillar">
+              <strong>Vision</strong>
+              <p>To be a globally recognized institution of academic excellence fostering innovation and research.</p>
+            </div>
+            <div class="pillar">
+              <strong>Mission</strong>
+              <p>Providing quality education that develops technically competent, ethically grounded professionals.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="departments-grid">
+        <div class="dept-card">Computer Science</div>
+        <div class="dept-card">Electronics</div>
+        <div class="dept-card">Mechanical</div>
+        <div class="dept-card">Civil Engineering</div>
+        <div class="dept-card">Mathematics</div>
+        <div class="dept-card">Physics</div>
+        <div class="dept-card">Chemistry</div>
+        <div class="dept-card">Electrical</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works" class="section how-section">
+    <div class="section-inner">
+      <div class="section-label">WORKFLOW</div>
+      <h2 class="section-title">How It Works</h2>
+      <div class="workflow-grid">
+        <div class="workflow-col">
+          <div class="role-badge admin-badge">ADMIN</div>
+          <div class="steps">
+            <div class="step"><span class="step-num">01</span><div><h4>Register & Login</h4><p>Create an admin account and log in with your credentials to access the dashboard.</p></div></div>
+            <div class="step"><span class="step-num">02</span><div><h4>Setup Subjects & Rooms</h4><p>Add all subjects with coordinator names and register available rooms with capacities.</p></div></div>
+            <div class="step"><span class="step-num">03</span><div><h4>Build Timetable</h4><p>Assign subjects to time slots, days, rooms, and sections to build the complete schedule.</p></div></div>
+            <div class="step"><span class="step-num">04</span><div><h4>Create Feedback Forms</h4><p>Design dynamic forms with custom questions — ratings, text responses, or MCQ options.</p></div></div>
+            <div class="step"><span class="step-num">05</span><div><h4>Share & Analyze</h4><p>Share forms to individual students and review aggregated or per-student responses.</p></div></div>
+          </div>
+        </div>
+        <div class="workflow-divider"></div>
+        <div class="workflow-col">
+          <div class="role-badge student-badge">STUDENT</div>
+          <div class="steps">
+            <div class="step"><span class="step-num">01</span><div><h4>Register & Login</h4><p>Create a student account and log in to access your personalized dashboard.</p></div></div>
+            <div class="step"><span class="step-num">02</span><div><h4>View Timetable</h4><p>Access your complete class schedule for the semester, neatly organized by day and time.</p></div></div>
+            <div class="step"><span class="step-num">03</span><div><h4>Download PDF</h4><p>Export your timetable as a professionally formatted PDF for offline reference.</p></div></div>
+            <div class="step"><span class="step-num">04</span><div><h4>Fill Feedback Forms</h4><p>Complete feedback forms assigned by admin with dynamic question interfaces.</p></div></div>
+            <div class="step"><span class="step-num">05</span><div><h4>Track Submissions</h4><p>View pending and completed feedback assignments from your dashboard.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section contact-section">
+    <div class="section-inner">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="section-label">GET IN TOUCH</div>
+          <h2 class="section-title">Contact Us</h2>
+          <div class="contact-items">
+            <div class="contact-item"><span>📍</span><p>Indian Institute of Information Technology (IIIT) Pune ,Gat No - 5 & 6,Vill - Nanoli-Tarf Chakan,PO - Talegaon,Tah - Maval, Dist-Pune , Maharashtra-410507</p></div>
+            <div class="contact-item"><span>📞</span><p>+91- 9839874624</p></div>
+            <div class="contact-item"><span>✉️</span><p>mnavneet809@gmail.com</p></div>
+            <div class="contact-item"><span>🌐</span><p><a href="https://www.iiitp.ac.in/" target="_blank">www.iiitp.ac.in</a></p></div>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about-system">System Features</a></li>
+            <li><a href="#about-college">About College</a></li>
+            <li><a href="/static/login.html">Login</a></li> 
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 National Institute of Technology. Timetable Management System v1.0</p>
+      </div>
+    </div>
+  </section>
+
+  <script src="/static/js/auth.js"></script>
+  <script>
+    const navbar = document.getElementById('navbar');
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+      hamburger.classList.toggle('active');
+    });
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        hamburger.classList.remove('active');
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.feature-card, .step, .dept-card, .stat-card').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

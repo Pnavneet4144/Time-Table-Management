@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — NIT TMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+</head>
+<body class="dashboard-body">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <span class="brand-icon">⬡</span>
+        <span>NIT<strong>TMS</strong></span>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="userAvatar">A</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUsername">Admin</span>
+          <span class="user-role">Administrator</span>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Academic</div>
+      <button class="sidebar-link active" onclick="showSection('subjects', this)">
+        <span class="link-icon">📚</span> Manage Subjects
+      </button>
+      <button class="sidebar-link" onclick="showSection('rooms', this)">
+        <span class="link-icon">🏫</span> Manage Rooms
+      </button>
+      <button class="sidebar-link" onclick="showSection('timetable', this)">
+        <span class="link-icon">📅</span> Build Timetable
+      </button>
+      <button class="sidebar-link" onclick="showSection('view-timetable', this)">
+        <span class="link-icon">👁️</span> View Timetable
+      </button>
+      <div class="nav-section-label">Feedback</div>
+      <button class="sidebar-link" onclick="showSection('create-feedback', this)">
+        <span class="link-icon">✍️</span> Create Feedback Form
+      </button>
+      <button class="sidebar-link" onclick="showSection('share-feedback', this)">
+        <span class="link-icon">📤</span> Share Feedback
+      </button>
+      <button class="sidebar-link" onclick="showSection('view-responses', this)">
+        <span class="link-icon">📊</span> View Responses
+      </button>
+      <div class="nav-section-label">Students</div>
+      <button class="sidebar-link" onclick="showSection('reset-password', this)">
+        <span class="link-icon">🔑</span> Reset Student Password
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="logout()">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:1rem">
+        <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <span class="topbar-title" id="topbarTitle">Manage Subjects</span>
+      </div>
+      <div class="topbar-actions">
+        <span class="badge-date" id="topbarDate"></span>
+      </div>
+    </header>
+
+    <div class="content-area">
+
+      <!-- SUBJECTS -->
+      <section id="section-subjects" class="page-section active">
+        <h2 class="section-heading">Manage Subjects</h2>
+        <p class="section-subheading">Add and manage academic subjects with coordinator information.</p>
+        <div class="card">
+          <div class="card-title">➕ Add New Subject</div>
+          <div class="form-row">
+            <div class="field-group">
+              <label>Subject Name</label>
+              <input type="text" id="subjectName" placeholder="e.g. Data Structures" />
+            </div>
+            <div class="field-group">
+              <label>Subject Code</label>
+              <input type="text" id="subjectCode" placeholder="e.g. CS401" />
+            </div>
+            <div class="field-group">
+              <label>Coordinator Name</label>
+              <input type="text" id="subjectCoord" placeholder="e.g. Dr. Sharma" />
+            </div>
+          </div>
+          <div style="margin-top:1rem">
+            <button class="action-btn btn-blue" onclick="addSubject()">Add Subject</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 All Subjects</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>Code</th><th>Coordinator</th><th>Actions</th></tr></thead>
+              <tbody id="subjectsTable"><tr><td colspan="5"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROOMS -->
+      <section id="section-rooms" class="page-section">
+        <h2 class="section-heading">Manage Rooms</h2>
+        <p class="section-subheading">Register classrooms and labs with their seating capacity.</p>
+        <div class="card">
+          <div class="card-title">➕ Add New Room</div>
+          <div class="form-row">
+            <div class="field-group">
+              <label>Room Number</label>
+              <input type="text" id="roomNumber" placeholder="e.g. A-101" />
+            </div>
+            <div class="field-group">
+              <label>Capacity</label>
+              <input type="number" id="roomCapacity" placeholder="e.g. 60" min="1" />
+            </div>
+          </div>
+          <div style="margin-top:1rem">
+            <button class="action-btn btn-blue" onclick="addRoom()">Add Room</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🏫 All Rooms</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Room Number</th><th>Capacity</th><th>Actions</th></tr></thead>
+              <tbody id="roomsTable"><tr><td colspan="4"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- BUILD TIMETABLE -->
+      <section id="section-timetable" class="page-section">
+        <h2 class="section-heading">Build Timetable</h2>
+        <p class="section-subheading">Assign subjects to fixed time slots, rooms, and sections.</p>
+        <div class="card">
+          <div class="card-title">📅 Add Timetable Entry</div>
+          <div class="form-row">
+            <div class="field-group">
+              <label>Subject</label>
+              <select id="ttSubject"><option value="">Select subject...</option></select>
+            </div>
+            <div class="field-group">
+              <label>Room</label>
+              <select id="ttRoom"><option value="">Select room...</option></select>
+            </div>
+            <div class="field-group">
+              <label>Day</label>
+              <select id="ttDay">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Time Slot</label>
+              <select id="ttTimeSlot">
+                <option value="09:30|10:30">09:30 – 10:30</option>
+                <option value="10:30|11:30">10:30 – 11:30</option>
+                <option value="11:30|12:30">11:30 – 12:30</option>
+                <option value="13:30|14:30">13:30 – 14:30 (After Break)</option>
+                <option value="14:30|15:30">14:30 – 15:30</option>
+                <option value="15:30|16:30">15:30 – 16:30</option>
+                <option value="16:30|17:30">16:30 – 17:30</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Semester</label>
+              <input type="text" id="ttSemester" placeholder="e.g. Sem 4" />
+            </div>
+            <div class="field-group">
+              <label>Section / Group</label>
+              <input type="text" id="ttSection" placeholder="e.g. A or 4" />
+            </div>
+          </div>
+          <div style="margin-top:1rem">
+            <button class="action-btn btn-blue" onclick="addTimetableEntry()">Add Entry</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Current Timetable Entries</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Subject</th><th>Room</th><th>Day</th><th>Time Slot</th><th>Section</th><th>Actions</th></tr></thead>
+              <tbody id="timetableEntriesTable"><tr><td colspan="7"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW TIMETABLE -->
+      <section id="section-view-timetable" class="page-section">
+        <h2 class="section-heading">View &amp; Download Timetable</h2>
+        <p class="section-subheading">Fill in college details and upload logo, then download the official PDF.</p>
+        <div class="card">
+          <div class="card-title">🏫 College Information for PDF</div>
+          <div class="form-row">
+            <div class="field-group">
+              <label>College Name</label>
+              <input type="text" id="pdfCollegeName" value="Indian Institute of Information Technology" />
+            </div>
+            <div class="field-group">
+              <label>College Subtitle</label>
+              <input type="text" id="pdfCollegeSubtitle" value="(An Institute of National Importance by an Act of Parliament)" />
+            </div>
+            <div class="field-group" style="grid-column:1/-1">
+              <label>College Address</label>
+              <input type="text" id="pdfCollegeAddress" value="Gat No - 5 & 6, Vill - Nanoli-Tarf Chakan, PO – Talegaon, Tah – Maval, Dist - Pune, Maharashtra – 410507" />
+            </div>
+            <div class="field-group">
+              <label>Semester Label</label>
+              <input type="text" id="pdfSemester" value="Even Semester, AY 2025-26" />
+            </div>
+            <div class="field-group">
+              <label>Section Label</label>
+              <input type="text" id="pdfSection" value="4th Sem Section B CSE" />
+            </div>
+            <div class="field-group">
+              <label>Location / Hall</label>
+              <input type="text" id="pdfLocation" value="LH8" />
+            </div>
+            <div class="field-group">
+              <label>College Logo (PNG/JPG)</label>
+              <input type="file" id="pdfLogo" accept="image/png,image/jpeg,image/jpg"
+                style="padding:0.4rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;width:100%" />
+            </div>
+            <div class="field-group" style="display:flex;align-items:flex-end">
+              <div id="logoPreviewBox" style="display:none;margin-top:0.5rem">
+                <img id="logoPreview" style="height:60px;border:1px solid var(--border);border-radius:6px;padding:4px" />
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px">Logo selected ✓</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem">
+            <span class="card-title" style="margin:0">📅 Full Timetable Preview</span>
+            <button class="action-btn btn-orange" onclick="downloadTimetablePDF()">⬇ Download PDF</button>
+          </div>
+          <div class="timetable-grid" id="timetableGrid">
+            <div class="loading"><div class="spinner"></div> Loading timetable...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CREATE FEEDBACK -->
+      <section id="section-create-feedback" class="page-section">
+        <h2 class="section-heading">Create Feedback Form</h2>
+        <p class="section-subheading">Build dynamic feedback forms with configurable question types.</p>
+        <div class="card">
+          <div class="card-title">Step 1 — Form Setup</div>
+          <div class="form-row">
+            <div class="field-group" style="grid-column:1/-1">
+              <label>Form Title</label>
+              <input type="text" id="formTitle" placeholder="e.g. Mid-Semester Faculty Feedback" />
+            </div>
+            <div class="field-group">
+              <label>Number of Questions</label>
+              <input type="number" id="questionCount" placeholder="e.g. 5" min="1" max="20" />
+            </div>
+            <div class="field-group" style="justify-content:flex-end;padding-top:1.4rem">
+              <button class="action-btn btn-blue" onclick="generateQuestionBuilders()">Generate Question Fields →</button>
+            </div>
+          </div>
+        </div>
+        <div id="questionsBuilderContainer"></div>
+        <div id="submitFeedbackFormBtn" style="display:none;margin-top:1rem">
+          <button class="action-btn btn-orange" style="width:100%;padding:1rem" onclick="submitFeedbackForm()">🚀 Create Feedback Form</button>
+        </div>
+      </section>
+
+      <!-- SHARE FEEDBACK -->
+      <section id="section-share-feedback" class="page-section">
+        <h2 class="section-heading">Share Feedback Forms</h2>
+        <p class="section-subheading">Assign forms to individual students for completion.</p>
+        <div class="card">
+          <div class="card-title">📤 Share Form to Students</div>
+          <div class="form-row">
+            <div class="field-group">
+              <label>Select Form</label>
+              <select id="shareFormSelect"><option value="">Select form...</option></select>
+            </div>
+          </div>
+          <div style="margin-top:1.2rem">
+            <div class="card-title" style="margin-bottom:0.8rem">Select Students</div>
+            <div id="studentChecklist"><div class="loading"><div class="spinner"></div> Loading students...</div></div>
+          </div>
+          <div style="margin-top:1rem">
+            <button class="action-btn btn-blue" onclick="shareForm()">Share to Selected Students</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW RESPONSES -->
+      <section id="section-view-responses" class="page-section">
+        <h2 class="section-heading">View Responses</h2>
+        <p class="section-subheading">Analyze all submitted feedback responses.</p>
+        <div class="card">
+          <div class="form-row" style="margin-bottom:1rem">
+            <div class="field-group">
+              <label>Select Feedback Form</label>
+              <select id="responseFormSelect" onchange="loadResponses()"><option value="">Select form...</option></select>
+            </div>
+          </div>
+          <div id="responsesContainer">
+            <div class="empty-state"><div class="empty-icon">📊</div><p>Select a form to view responses.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESET STUDENT PASSWORD -->
+      <section id="section-reset-password" class="page-section">
+        <h2 class="section-heading">Reset Student Password</h2>
+        <p class="section-subheading">Reset a student's password on their behalf when they forget it.</p>
+        <div class="card">
+          <div class="card-title">🔑 Reset Password</div>
+          <div class="form-row">
+            <div class="field-group">
+              <label>Select Student</label>
+              <select id="resetStudentSelect">
+                <option value="">Select student...</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>New Password</label>
+              <input type="password" id="resetNewPassword" placeholder="Enter new password (min 6 chars)" />
+            </div>
+            <div class="field-group">
+              <label>Confirm Password</label>
+              <input type="password" id="resetConfirmPassword" placeholder="Confirm new password" />
+            </div>
+          </div>
+          <div style="margin-top:1rem">
+            <button class="action-btn btn-blue" onclick="resetStudentPassword()">Reset Password</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 All Students</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Username</th><th>Email</th><th>Quick Reset</th></tr></thead>
+              <tbody id="studentsListTable">
+                <tr><td colspan="4"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>
