@@ -30,11 +30,17 @@
       <button class="sidebar-link active" onclick="showSection('subjects', this)">
         <span class="link-icon">📚</span> Manage Subjects
       </button>
+      <button class="sidebar-link" onclick="showSection('teachers', this)">
+        <span class="link-icon">👨‍🏫</span> Manage Teachers
+      </button>
       <button class="sidebar-link" onclick="showSection('rooms', this)">
         <span class="link-icon">🏫</span> Manage Rooms
       </button>
       <button class="sidebar-link" onclick="showSection('timetable', this)">
         <span class="link-icon">📅</span> Build Timetable
+      </button>
+      <button class="sidebar-link" onclick="showSection('auto-generate', this)">
+        <span class="link-icon">🤖</span> Auto-Generate
       </button>
       <button class="sidebar-link" onclick="showSection('view-timetable', this)">
         <span class="link-icon">👁️</span> View Timetable
@@ -75,7 +81,7 @@
       <!-- SUBJECTS -->
       <section id="section-subjects" class="page-section active">
         <h2 class="section-heading">Manage Subjects</h2>
-        <p class="section-subheading">Add and manage academic subjects with coordinator information.</p>
+        <p class="section-subheading">Add and manage academic subjects with coordinator, teacher, and scheduling info.</p>
         <div class="card">
           <div class="card-title">➕ Add New Subject</div>
           <div class="form-row">
@@ -91,6 +97,27 @@
               <label>Coordinator Name</label>
               <input type="text" id="subjectCoord" placeholder="e.g. Dr. Sharma" />
             </div>
+            <div class="field-group">
+              <label>Assign Teacher</label>
+              <select id="subjectTeacher">
+                <option value="">No teacher assigned</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Lectures/Week</label>
+              <input type="number" id="subjectLPW" value="3" min="1" max="10" />
+            </div>
+            <div class="field-group">
+              <label>Type</label>
+              <select id="subjectIsLab">
+                <option value="false">Theory</option>
+                <option value="true">Lab</option>
+              </select>
+            </div>
+            <div class="field-group" id="labDurationGroup" style="display:none">
+              <label>Lab Duration (slots)</label>
+              <input type="number" id="subjectLabDuration" value="2" min="2" max="4" />
+            </div>
           </div>
           <div style="margin-top:1rem">
             <button class="action-btn btn-blue" onclick="addSubject()">Add Subject</button>
@@ -100,9 +127,61 @@
           <div class="card-title">📋 All Subjects</div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Name</th><th>Code</th><th>Coordinator</th><th>Actions</th></tr></thead>
-              <tbody id="subjectsTable"><tr><td colspan="5"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+              <thead><tr><th>#</th><th>Name</th><th>Code</th><th>Coordinator</th><th>Teacher</th><th>Lec/Wk</th><th>Type</th><th>Actions</th></tr></thead>
+              <tbody id="subjectsTable"><tr><td colspan="8"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TEACHERS -->
+      <section id="section-teachers" class="page-section">
+        <h2 class="section-heading">Manage Teachers</h2>
+        <p class="section-subheading">Register teachers and configure their availability for scheduling.</p>
+        <div class="card">
+          <div class="card-title">➕ Add New Teacher</div>
+          <div class="form-row">
+            <div class="field-group">
+              <label>Teacher Name</label>
+              <input type="text" id="teacherName" placeholder="e.g. Dr. Sharma" />
+            </div>
+            <div class="field-group">
+              <label>Email (optional)</label>
+              <input type="email" id="teacherEmail" placeholder="e.g. sharma@iiit.ac.in" />
+            </div>
+          </div>
+          <div style="margin-top:1rem">
+            <button class="action-btn btn-blue" onclick="addTeacher()">Add Teacher</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">👨‍🏫 All Teachers</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Unavailable Slots</th><th>Actions</th></tr></thead>
+              <tbody id="teachersTable"><tr><td colspan="5"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Teacher availability editor modal (hidden by default) -->
+        <div id="availabilityModal" class="avail-modal" style="display:none">
+          <div class="avail-modal-content">
+            <div class="avail-modal-header">
+              <h3>⏰ Edit Availability — <span id="availTeacherName"></span></h3>
+              <button class="avail-close-btn" onclick="closeAvailabilityModal()">✕</button>
+            </div>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:1rem">
+              Click cells to mark time slots as <strong style="color:#c62828">unavailable</strong>.
+              Red cells = teacher is NOT available.
+            </p>
+            <div class="avail-grid-wrap">
+              <table class="avail-grid" id="availGrid"></table>
+            </div>
+            <div style="margin-top:1.2rem;display:flex;gap:0.8rem;justify-content:flex-end">
+              <button class="action-btn btn-outline" onclick="closeAvailabilityModal()">Cancel</button>
+              <button class="action-btn btn-blue" onclick="saveAvailability()">💾 Save Availability</button>
+            </div>
           </div>
         </div>
       </section>
@@ -138,10 +217,10 @@
         </div>
       </section>
 
-      <!-- BUILD TIMETABLE -->
+      <!-- BUILD TIMETABLE (manual) -->
       <section id="section-timetable" class="page-section">
-        <h2 class="section-heading">Build Timetable</h2>
-        <p class="section-subheading">Assign subjects to fixed time slots, rooms, and sections.</p>
+        <h2 class="section-heading">Build Timetable (Manual)</h2>
+        <p class="section-subheading">Assign subjects to fixed time slots, rooms, and sections manually.</p>
         <div class="card">
           <div class="card-title">📅 Add Timetable Entry</div>
           <div class="form-row">
@@ -196,6 +275,75 @@
               <thead><tr><th>#</th><th>Subject</th><th>Room</th><th>Day</th><th>Time Slot</th><th>Section</th><th>Actions</th></tr></thead>
               <tbody id="timetableEntriesTable"><tr><td colspan="7"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- AUTO-GENERATE TIMETABLE -->
+      <section id="section-auto-generate" class="page-section">
+        <h2 class="section-heading">🤖 Auto-Generate Timetable</h2>
+        <p class="section-subheading">Configure constraints and let the algorithm build a conflict-free timetable automatically.</p>
+
+        <div class="card auto-gen-hero">
+          <div class="auto-gen-icon">⚡</div>
+          <h3 style="margin:0 0 0.3rem 0;color:var(--text-primary)">Intelligent Scheduling Engine</h3>
+          <p style="margin:0;color:var(--text-secondary);font-size:0.88rem">
+            Automatically assigns subjects to time slots and rooms while ensuring
+            no teacher, room, or section conflicts. Supports lab sessions, teacher availability, and even distribution.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Configuration</div>
+          <div class="form-row">
+            <div class="field-group">
+              <label>Semester</label>
+              <input type="text" id="agSemester" placeholder="e.g. Sem 4" />
+            </div>
+            <div class="field-group">
+              <label>Section</label>
+              <input type="text" id="agSection" placeholder="e.g. B" />
+            </div>
+          </div>
+          <div style="margin-top:1rem">
+            <label style="font-weight:600;color:var(--text-primary);margin-bottom:0.5rem;display:block">Days to include</label>
+            <div class="day-checkboxes">
+              <label class="day-check"><input type="checkbox" value="Monday" checked /> Mon</label>
+              <label class="day-check"><input type="checkbox" value="Tuesday" checked /> Tue</label>
+              <label class="day-check"><input type="checkbox" value="Wednesday" checked /> Wed</label>
+              <label class="day-check"><input type="checkbox" value="Thursday" checked /> Thu</label>
+              <label class="day-check"><input type="checkbox" value="Friday" checked /> Fri</label>
+              <label class="day-check"><input type="checkbox" value="Saturday" /> Sat</label>
+            </div>
+          </div>
+          <div style="margin-top:1.2rem">
+            <label style="font-weight:600;color:var(--text-primary);margin-bottom:0.5rem;display:block">Subjects to schedule</label>
+            <div id="agSubjectsList" class="ag-subjects-list">
+              <div class="loading"><div class="spinner"></div> Loading subjects...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📊 Pre-Generation Summary</div>
+          <div id="agSummary" class="ag-summary">
+            <p style="color:var(--text-secondary)">Configure the fields above and check the summary before generating.</p>
+          </div>
+          <div style="margin-top:1.2rem;display:flex;gap:1rem;flex-wrap:wrap">
+            <button class="action-btn btn-blue" onclick="refreshAutoGenSummary()">🔄 Refresh Summary</button>
+            <button class="action-btn btn-generate" onclick="runAutoGenerate()">
+              <span class="generate-icon">⚡</span> Auto-Generate Timetable
+            </button>
+          </div>
+        </div>
+
+        <!-- Results area -->
+        <div id="agResultArea" style="display:none">
+          <div class="card" id="agResultCard">
+            <div class="card-title" id="agResultTitle">🎉 Generated Timetable</div>
+            <div id="agWarnings"></div>
+            <div id="agResultGrid" class="timetable-grid"></div>
+            <div id="agResultStats" style="margin-top:1rem"></div>
           </div>
         </div>
       </section>
