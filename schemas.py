@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict
 from datetime import datetime
 
 
@@ -35,10 +35,43 @@ class TokenData(BaseModel):
     role: Optional[str] = None
 
 
+# ── Teacher ───────────────────────────────────────────────────────────
+class UnavailableSlot(BaseModel):
+    day: str
+    slot: str  # e.g. "09:30|10:30"
+
+
+class TeacherCreate(BaseModel):
+    name: str
+    email: Optional[str] = None
+    unavailable_slots: Optional[List[UnavailableSlot]] = []
+
+
+class TeacherUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    unavailable_slots: Optional[List[UnavailableSlot]] = None
+
+
+class TeacherOut(BaseModel):
+    id: int
+    name: str
+    email: Optional[str] = None
+    unavailable_slots: Optional[List[UnavailableSlot]] = []
+
+    class Config:
+        from_attributes = True
+
+
+# ── Subject ───────────────────────────────────────────────────────────
 class SubjectCreate(BaseModel):
     name: str
     code: str
     coordinator_name: str
+    teacher_id: Optional[int] = None
+    lectures_per_week: Optional[int] = 3
+    is_lab: Optional[bool] = False
+    lab_duration: Optional[int] = 2
 
 
 class SubjectOut(BaseModel):
@@ -46,11 +79,17 @@ class SubjectOut(BaseModel):
     name: str
     code: str
     coordinator_name: str
+    teacher_id: Optional[int] = None
+    lectures_per_week: int = 3
+    is_lab: bool = False
+    lab_duration: int = 2
+    teacher: Optional[TeacherOut] = None
 
     class Config:
         from_attributes = True
 
 
+# ── Room ──────────────────────────────────────────────────────────────
 class RoomCreate(BaseModel):
     room_number: str
     capacity: int
@@ -65,6 +104,7 @@ class RoomOut(BaseModel):
         from_attributes = True
 
 
+# ── Timetable ─────────────────────────────────────────────────────────
 class TimetableEntryCreate(BaseModel):
     subject_id: int
     room_id: int
@@ -89,6 +129,35 @@ class TimetableEntryOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# ── Auto-Generate ─────────────────────────────────────────────────────
+class AutoGenerateRequest(BaseModel):
+    semester: str
+    section: str
+    days: List[str] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    time_slots: Optional[List[str]] = None  # e.g. ["09:30|10:30", ...]; None = use defaults
+    subject_ids: Optional[List[int]] = None  # None = use all subjects
+
+
+class AutoGenerateEntry(BaseModel):
+    subject_id: int
+    subject_code: str
+    subject_name: str
+    room_id: int
+    room_number: str
+    teacher_name: str
+    day_of_week: str
+    start_time: str
+    end_time: str
+
+
+class AutoGenerateResponse(BaseModel):
+    success: bool
+    entries: List[AutoGenerateEntry] = []
+    warnings: List[str] = []
+    total_placed: int = 0
+    total_required: int = 0
 
 
 class FeedbackQuestionCreate(BaseModel):

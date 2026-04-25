@@ -19,6 +19,29 @@ class User(Base):
     feedback_responses = relationship("FeedbackResponse", back_populates="student")
 
 
+class Teacher(Base):
+    __tablename__ = "teachers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=True)
+    # JSON list: [{"day":"Monday","slot":"09:30|10:30"}, ...]
+    unavailable_slots = Column(Text, nullable=True, default="[]")
+
+    subjects = relationship("Subject", back_populates="teacher")
+
+    def get_unavailable(self):
+        if self.unavailable_slots:
+            try:
+                return json.loads(self.unavailable_slots)
+            except (json.JSONDecodeError, TypeError):
+                return []
+        return []
+
+    def set_unavailable(self, slots_list):
+        self.unavailable_slots = json.dumps(slots_list)
+
+
 class Subject(Base):
     __tablename__ = "subjects"
 
@@ -26,7 +49,12 @@ class Subject(Base):
     name = Column(String, nullable=False)
     code = Column(String, unique=True, nullable=False)
     coordinator_name = Column(String, nullable=False)
+    teacher_id = Column(Integer, ForeignKey("teachers.id"), nullable=True)
+    lectures_per_week = Column(Integer, default=3)
+    is_lab = Column(Boolean, default=False)
+    lab_duration = Column(Integer, default=2)  # consecutive slots for labs
 
+    teacher = relationship("Teacher", back_populates="subjects")
     timetable_entries = relationship("TimetableEntry", back_populates="subject")
 
 
