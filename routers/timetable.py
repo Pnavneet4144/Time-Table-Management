@@ -145,9 +145,21 @@ def create_timetable_entry(entry: schemas.TimetableEntryCreate,
     db.add(obj); db.commit(); db.refresh(obj); return obj
 
 @router.get("/timetable", response_model=List[schemas.TimetableEntryOut])
-def get_timetable(db: Session = Depends(get_db),
-                  current_user: models.User = Depends(auth.require_admin)):
-    return db.query(models.TimetableEntry).all()
+def get_timetable(
+    semester: Optional[str] = Query(None),
+    section: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.require_admin)
+):
+    query = db.query(models.TimetableEntry).options(
+        joinedload(models.TimetableEntry.subject),
+        joinedload(models.TimetableEntry.room)
+    )
+    if semester and semester != "all":
+        query = query.filter(models.TimetableEntry.semester == semester)
+    if section and section != "all":
+        query = query.filter(models.TimetableEntry.section == section)
+    return query.all()
 
 @router.put("/timetable/{entry_id}", response_model=schemas.TimetableEntryOut)
 def update_timetable_entry(entry_id: int, entry: schemas.TimetableEntryCreate,
